@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lấy Key Telegram Bot</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #0088cc;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #0088cc;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #006699;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 4px;
+            display: none;
+        }
+        .success {
+            background-color: #dff0d8;
+            color: #3c763d;
+            border: 1px solid #d6e9c6;
+        }
+        .error {
+            background-color: #f2dede;
+            color: #a94442;
+            border: 1px solid #ebccd1;
+        }
+        .instructions {
+            margin-top: 30px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            border-left: 4px solid #0088cc;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Lấy Key cho Telegram Bot</h1>
+        
+        <div class="form-group">
+            <label for="botToken">Token của Bot Telegram:</label>
+            <input type="text" id="botToken" placeholder="Nhập token bot (ví dụ: 123456789:ABC-DEF1234ghIkl-zyx57W2v1u123ew11)" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="userId">ID Telegram của bạn:</label>
+            <input type="text" id="userId" placeholder="Nhập ID Telegram của bạn" required>
+        </div>
+        
+        <button onclick="generateKey()">Tạo Key</button>
+        
+        <div id="result" class="result"></div>
+        
+        <div class="instructions">
+            <h3>Hướng dẫn sử dụng:</h3>
+            <ol>
+                <li>Nhập token bot Telegram của bạn (lấy từ @BotFather)</li>
+                <li>Nhập ID Telegram của bạn (có thể lấy từ @userinfobot)</li>
+                <li>Nhấn "Tạo Key" để nhận key kết nối</li>
+                <li>Sử dụng key này để cấu hình bot vượt link</li>
+            </ol>
+            <p><strong>Lưu ý:</strong> Không chia sẻ token bot hoặc key này với người khác để tránh bị lạm dụng.</p>
+        </div>
+    </div>
+
+    <script>
+        function generateKey() {
+            const botToken = document.getElementById('botToken').value.trim();
+            const userId = document.getElementById('userId').value.trim();
+            const resultDiv = document.getElementById('result');
+            
+            // Kiểm tra input
+            if (!botToken || !userId) {
+                showResult('Vui lòng điền đầy đủ thông tin', 'error');
+                return;
+            }
+            
+            // Kiểm tra định dạng token bot (cơ bản)
+            if (!botToken.includes(':') || botToken.length < 30) {
+                showResult('Token bot không hợp lệ', 'error');
+                return;
+            }
+            
+            // Kiểm tra user ID (cơ bản)
+            if (isNaN(userId) || userId.length < 5) {
+                showResult('ID Telegram không hợp lệ', 'error');
+                return;
+            }
+            
+            // Tạo key (trong thực tế nên mã hóa phức tạp hơn)
+            const timestamp = Math.floor(Date.now() / 1000);
+            const rawKey = `${botToken}:${userId}:${timestamp}`;
+            const key = btoa(rawKey);
+            
+            // Hiển thị kết quả
+            showResult(`<strong>Key của bạn:</strong><br><code>${key}</code><br><br>Hãy sao chép và sử dụng key này để cấu hình bot.`, 'success');
+        }
+        
+        function showResult(message, type) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = message;
+            resultDiv.className = 'result ' + type;
+            resultDiv.style.display = 'block';
+        }
+    </script>
+</body>
+</html>

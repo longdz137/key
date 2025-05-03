@@ -3,199 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hệ Thống Lấy Key - Bot Telegram</title>
-    <style>
-        :root {
-            --primary-color: #4CAF50;
-            --secondary-color: #2196F3;
-            --dark-color: #333;
-            --light-color: #f5f5f5;
-        }
-        body {
-            font-family: 'Arial', sans-serif;
-            line-height: 1.6;
-            margin: 0;
-            padding: 20px;
-            background-color: #f9f9f9;
-            color: var(--dark-color);
-        }
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            background: white;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-        h1 {
-            color: var(--primary-color);
-            text-align: center;
-            margin-bottom: 25px;
-            border-bottom: 2px solid var(--primary-color);
-            padding-bottom: 10px;
-        }
-        .form-group {
-            margin-bottom: 20px;
-        }
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-            color: var(--primary-color);
-        }
-        input[type="text"], input[type="number"] {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            box-sizing: border-box;
-            font-size: 16px;
-        }
-        button {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            width: 100%;
-            margin-top: 10px;
-        }
-        button.secondary {
-            background-color: var(--secondary-color);
-        }
-        .result {
-            margin-top: 20px;
-            padding: 15px;
-            border-radius: 5px;
-            display: none;
-        }
-        .success {
-            background-color: #e8f5e9;
-            color: #1b5e20;
-            border: 1px solid #a5d6a7;
-        }
-        .error {
-            background-color: #ffebee;
-            color: #c62828;
-            border: 1px solid #ef9a9a;
-        }
-        .hidden {
-            display: none;
-        }
-        .admin-link {
-            text-align: center;
-            margin-top: 20px;
-        }
-    </style>
+    <title>Hệ Thống Quản Lý Key - Bot Telegram</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
-        <h1>LẤY KEY XÁC NHẬN</h1>
+        <h1>HỆ THỐNG QUẢN LÝ KEY BOT TELEGRAM</h1>
         
-        <div class="form-group">
-            <label for="user-id">ID Telegram của bạn:</label>
-            <input type="text" id="user-id" placeholder="Nhập ID Telegram (lấy bằng lệnh /myid trong bot)">
+        <div class="tabs">
+            <div class="tab active" onclick="openTab('userTab')">Người Dùng</div>
+            <div class="tab" onclick="openTab('adminTab')">Quản Trị</div>
         </div>
         
-        <div class="form-group">
-            <label for="task-link">Link nhiệm vụ đã hoàn thành:</label>
-            <input type="text" id="task-link" placeholder="Dán link nhiệm vụ từ bot vào đây">
-        </div>
-        
-        <button onclick="getConfirmationKey()">Lấy Key Xác Nhận</button>
-        
-        <div id="user-result" class="result"></div>
-        
-        <div id="key-section" class="hidden">
+        <!-- Tab Người Dùng -->
+        <div id="userTab" class="tab-content active">
+            <h2>Lấy Key Xác Nhận</h2>
+            
             <div class="form-group">
-                <label for="confirmation-key">Key xác nhận của bạn:</label>
-                <input type="text" id="confirmation-key" readonly>
+                <label for="user-id">ID Telegram của bạn:</label>
+                <input type="text" id="user-id" placeholder="Nhập ID Telegram (lấy bằng lệnh /myid trong bot)">
             </div>
-            <button onclick="copyKey()">Sao Chép Key</button>
-            <button class="secondary" onclick="sendToTelegram()">Gửi Về Bot</button>
+            
+            <div class="form-group">
+                <label for="task-link">Link nhiệm vụ đã hoàn thành:</label>
+                <input type="text" id="task-link" placeholder="Dán link nhiệm vụ từ bot vào đây">
+            </div>
+            
+            <div class="form-group">
+                <label for="screenshot">Ảnh chụp màn hình (tùy chọn):</label>
+                <input type="file" id="screenshot" accept="image/*">
+            </div>
+            
+            <button onclick="getConfirmationKey()">Lấy Key Xác Nhận</button>
+            
+            <div id="user-result" class="result"></div>
+            
+            <div id="key-section" class="hidden">
+                <div class="form-group">
+                    <label for="confirmation-key">Key xác nhận của bạn:</label>
+                    <input type="text" id="confirmation-key" readonly>
+                </div>
+                <button onclick="copyKey()">Sao Chép Key</button>
+                <button class="secondary" onclick="sendToTelegram()">Gửi Về Bot</button>
+            </div>
+            
+            <div class="instructions">
+                <h3>Hướng dẫn sử dụng:</h3>
+                <ol>
+                    <li>Hoàn thành nhiệm vụ từ link được bot cung cấp</li>
+                    <li>Nhập ID Telegram và link nhiệm vụ vào form trên</li>
+                    <li>Nhấn "Lấy Key Xác Nhận" để nhận key</li>
+                    <li>Sao chép key và gửi cho bot bằng lệnh <code>/nhapkey [key-của-bạn]</code></li>
+                </ol>
+            </div>
         </div>
         
-        <div class="admin-link">
-            <a href="getkey.html">Truy cập trang quản trị</a>
+        <!-- Tab Quản Trị -->
+        <div id="adminTab" class="tab-content">
+            <!-- Nội dung quản trị sẽ được load từ file admin.html -->
         </div>
     </div>
 
+    <script src="script.js"></script>
     <script>
-        // Lấy key xác nhận cho người dùng
-        function getConfirmationKey() {
-            const userId = document.getElementById('user-id').value.trim();
-            const taskLink = document.getElementById('task-link').value.trim();
-            const resultDiv = document.getElementById('user-result');
-            
-            // Kiểm tra input
-            if (!userId || !taskLink) {
-                showResult('Vui lòng điền đầy đủ ID Telegram và Link nhiệm vụ', 'error', 'user-result');
-                return;
+        // Load nội dung quản trị khi tab được click
+        document.querySelector('.tab[onclick="openTab(\'adminTab\')"]').addEventListener('click', function() {
+            if (document.getElementById('adminTab').innerHTML.trim() === '') {
+                fetch('admin.html')
+                    .then(response => response.text())
+                    .then(html => {
+                        document.getElementById('adminTab').innerHTML = html;
+                    });
             }
-            
-            // Kiểm tra ID Telegram
-            if (isNaN(userId) || userId.length < 5) {
-                showResult('ID Telegram không hợp lệ', 'error', 'user-result');
-                return;
-            }
-            
-            // Gọi API để lấy key (giả lập)
-            fetch('api/getKey', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    userId: userId,
-                    taskLink: taskLink
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    document.getElementById('confirmation-key').value = data.key;
-                    document.getElementById('key-section').classList.remove('hidden');
-                    showResult(`✅ Key xác nhận đã được tạo! Bạn sẽ nhận được ${data.reward} VNĐ khi xác nhận với bot.`, 'success', 'user-result');
-                } else {
-                    showResult(data.message, 'error', 'user-result');
-                }
-            })
-            .catch(error => {
-                showResult('Lỗi kết nối đến server', 'error', 'user-result');
-            });
-        }
-
-        // Sao chép key
-        function copyKey() {
-            const keyInput = document.getElementById('confirmation-key');
-            keyInput.select();
-            document.execCommand('copy');
-            
-            // Hiển thị thông báo
-            const originalText = keyInput.value;
-            keyInput.value = "Đã sao chép!";
-            setTimeout(() => {
-                keyInput.value = originalText;
-            }, 2000);
-            
-            showResult('Key đã được sao chép vào clipboard!', 'info', 'user-result');
-        }
-
-        // Gửi key về Telegram (giả lập)
-        function sendToTelegram() {
-            const key = document.getElementById('confirmation-key').value;
-            showResult(`Mở Telegram và gửi lệnh: <code>/nhapkey ${key}</code> cho bot`, 'info', 'user-result');
-        }
-
-        // Hiển thị kết quả
-        function showResult(message, type, target) {
-            const resultDiv = document.getElementById(target);
-            resultDiv.innerHTML = message;
-            resultDiv.className = 'result ' + type;
-            resultDiv.style.display = 'block';
-        }
+        });
     </script>
 </body>
 </html>

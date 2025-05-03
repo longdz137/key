@@ -39,21 +39,6 @@ function renderTaskList() {
     }
 }
 
-// Mở tab
-function openTab(tabId) {
-    // Ẩn tất cả các tab
-    document.querySelectorAll('.tab-content').forEach(tab => {
-        tab.classList.remove('active');
-    });
-    document.querySelectorAll('.tab').forEach(tab => {
-        tab.classList.remove('active');
-    });
-    
-    // Hiển thị tab được chọn
-    document.getElementById(tabId).classList.add('active');
-    event.currentTarget.classList.add('active');
-}
-
 // Lấy key xác nhận cho người dùng
 function getConfirmationKey() {
     const userId = document.getElementById('user-id').value.trim();
@@ -205,21 +190,10 @@ function showResult(message, type, target) {
 // Khởi tạo
 document.addEventListener('DOMContentLoaded', function() {
     renderTaskList();
-}
+});
 
-// Hàm để giao tiếp giữa iframe và trang chính
-function postMessageToAdmin(action, data) {
-    const adminIframe = document.getElementById('admin-iframe');
-    if (adminIframe && adminIframe.contentWindow) {
-        adminIframe.contentWindow.postMessage({ action, data }, '*');
-    }
-}
-
-// Xử lý message từ iframe admin
+// Giao tiếp giữa các iframe
 window.addEventListener('message', function(event) {
-    if (event.data && event.data.action === 'adminLoginSuccess') {
-        // Xử lý khi admin login thành công từ iframe
-        document.getElementById('admin-panel').classList.remove('hidden');
-    }
-    // Có thể thêm các action khác tùy nhu cầu
+    // Có thể thêm các xử lý message nếu cần
+    console.log('Message received:', event.data);
 });

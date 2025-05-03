@@ -291,6 +291,23 @@
             border-left: 4px solid var(--primary-color);
         }
         
+        /* Search and Pagination */
+        .search-pagination {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            align-items: center;
+        }
+        
+        .search-box {
+            width: 60%;
+        }
+        
+        .pagination-controls {
+            display: flex;
+            align-items: center;
+        }
+        
         /* Responsive */
         @media (max-width: 768px) {
             .sidebar {
@@ -300,6 +317,15 @@
             
             .main-content {
                 margin-left: 0;
+            }
+            
+            .search-pagination {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .search-box {
+                width: 100%;
             }
         }
     </style>
@@ -405,6 +431,17 @@
                             <h3><i class="fas fa-list"></i> Danh Sách Nhiệm Vụ Hiện Tại</h3>
                         </div>
                         
+                        <div class="search-pagination">
+                            <div class="search-box">
+                                <input type="text" id="search-task" class="form-control" placeholder="Tìm kiếm nhiệm vụ..." oninput="searchTasks()">
+                            </div>
+                            <div class="pagination-controls">
+                                <button onclick="prevPage()" class="btn btn-primary" style="margin-right: 5px;"><i class="fas fa-chevron-left"></i></button>
+                                <span id="page-info">1/1</span>
+                                <button onclick="nextPage()" class="btn btn-primary" style="margin-left: 5px;"><i class="fas fa-chevron-right"></i></button>
+                            </div>
+                        </div>
+                        
                         <div class="table-responsive">
                             <table id="task-table">
                                 <thead>
@@ -426,15 +463,22 @@
                     <!-- User Management Card -->
                     <div class="card">
                         <div class="card-header">
-                            <h3><i class="fas fa-users"></i> Quản Lý Người Dùng</h3>
+                            <h3><i class="fas fa-users"></i> Quản Lý Dữ Liệu</h3>
                         </div>
                         
-                        <button onclick="viewUserStats()" class="btn btn-success">
-                            <i class="fas fa-chart-bar"></i> Xem Thống Kê Người Dùng
+                        <button onclick="exportTasks()" class="btn btn-success">
+                            <i class="fas fa-file-export"></i> Xuất dữ liệu
                         </button>
-                        <button onclick="exportUserData()" class="btn btn-warning">
-                            <i class="fas fa-file-export"></i> Xuất Dữ Liệu Người Dùng
+                        <button onclick="importTasks()" class="btn btn-warning">
+                            <i class="fas fa-file-import"></i> Nhập dữ liệu
                         </button>
+                        <input type="file" id="import-file" accept=".json" style="display: none;">
+                        
+                        <div style="margin-top: 15px;">
+                            <button onclick="viewUserStats()" class="btn btn-primary">
+                                <i class="fas fa-chart-bar"></i> Xem Thống Kê
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -448,12 +492,17 @@
             password: "admin123"
         };
 
-        // Sample tasks data
-        let tasks = {
+        // Tasks data - load from localStorage or use sample data
+        let tasks = JSON.parse(localStorage.getItem('telegram_bot_tasks')) || {
             "https://yeumoney.com/BWq9l": { key: "anhcodedz1235", reward: 100 },
             "https://yeumoney.com/wr--U": { key: "anhcodedz1223", reward: 100 },
             "https://yeumoney.com/GG2eLN": { key: "anhcodeyeuem", reward: 100 }
         };
+
+        // Pagination variables
+        let currentPage = 1;
+        const itemsPerPage = 5;
+        let currentSearchTerm = '';
 
         // Show alert message
         function showAlert(message, type, target) {
@@ -482,13 +531,32 @@
             }
         }
 
-        // Render task list
+        // Render task list with search and pagination
         function renderTaskList() {
             const taskList = document.getElementById('task-list');
             taskList.innerHTML = '';
             
-            let index = 1;
-            for (const [link, task] of Object.entries(tasks)) {
+            // Filter tasks based on search term
+            let filteredTasks = Object.entries(tasks);
+            if (currentSearchTerm) {
+                filteredTasks = filteredTasks.filter(([link, task]) => 
+                    link.toLowerCase().includes(currentSearchTerm) || 
+                    task.key.toLowerCase().includes(currentSearchTerm)
+                );
+            }
+            
+            // Pagination
+            const totalTasks = filteredTasks.length;
+            const totalPages = Math.ceil(totalTasks / itemsPerPage);
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const paginatedTasks = filteredTasks.slice(startIndex, startIndex + itemsPerPage);
+            
+            // Update page info
+            document.getElementById('page-info').textContent = `${currentPage}/${totalPages || 1}`;
+            
+            // Render tasks
+            let index = startIndex + 1;
+            for (const [link, task] of paginatedTasks) {
                 const row = document.createElement('tr');
                 
                 row.innerHTML = `
@@ -497,6 +565,9 @@
                     <td>${task.key}</td>
                     <td>${task.reward} VNĐ</td>
                     <td>
+                        <button onclick="editTask('${link}')" class="action-btn btn-primary" style="margin-right: 5px;">
+                            <i class="fas fa-edit"></i> Sửa
+                        </button>
                         <button onclick="removeTask('${link}')" class="action-btn btn-danger">
                             <i class="fas fa-trash"></i> Xóa
                         </button>
@@ -505,6 +576,36 @@
                 
                 taskList.appendChild(row);
                 index++;
+            }
+        }
+
+        // Search tasks
+        function searchTasks() {
+            currentSearchTerm = document.getElementById('search-task').value.toLowerCase();
+            currentPage = 1;
+            renderTaskList();
+        }
+
+        // Pagination controls
+        function prevPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                renderTaskList();
+            }
+        }
+
+        function nextPage() {
+            const filteredTasks = currentSearchTerm 
+                ? Object.entries(tasks).filter(([link, task]) => 
+                    link.toLowerCase().includes(currentSearchTerm) || 
+                    task.key.toLowerCase().includes(currentSearchTerm)
+                  )
+                : Object.entries(tasks);
+            
+            const totalPages = Math.ceil(filteredTasks.length / itemsPerPage);
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderTaskList();
             }
         }
 
@@ -525,6 +626,7 @@
             }
             
             tasks[link] = { key, reward };
+            localStorage.setItem('telegram_bot_tasks', JSON.stringify(tasks));
             renderTaskList();
             
             // Reset form
@@ -534,10 +636,25 @@
             showAlert('Đã thêm nhiệm vụ mới thành công!', 'success', 'admin-result');
         }
 
+        // Edit task
+        function editTask(link) {
+            const task = tasks[link];
+            document.getElementById('new-task-link').value = link;
+            document.getElementById('new-task-key').value = task.key;
+            document.getElementById('task-reward').value = task.reward;
+            
+            delete tasks[link];
+            localStorage.setItem('telegram_bot_tasks', JSON.stringify(tasks));
+            renderTaskList();
+            
+            showAlert('Đã tải nhiệm vụ lên form chỉnh sửa', 'info', 'admin-result');
+        }
+
         // Remove task
         function removeTask(link) {
             if (confirm(`Bạn có chắc muốn xóa nhiệm vụ:\n${link}`)) {
                 delete tasks[link];
+                localStorage.setItem('telegram_bot_tasks', JSON.stringify(tasks));
                 renderTaskList();
                 showAlert('Đã xóa nhiệm vụ thành công', 'success', 'admin-result');
             }
@@ -547,18 +664,56 @@
         function resetTaskList() {
             if (confirm('Bạn có chắc muốn RESET toàn bộ danh sách nhiệm vụ?')) {
                 tasks = {};
+                localStorage.setItem('telegram_bot_tasks', JSON.stringify(tasks));
                 renderTaskList();
                 showAlert('Đã reset danh sách nhiệm vụ', 'info', 'admin-result');
             }
         }
 
-        // View user stats
-        function viewUserStats() {
-            showAlert('Chức năng này cần kết nối với cơ sở dữ liệu phía server', 'info', 'admin-result');
+        // Export tasks to JSON file
+        function exportTasks() {
+            const dataStr = JSON.stringify(tasks, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            
+            const exportName = 'telegram_tasks_' + new Date().toISOString().slice(0,10) + '.json';
+            
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportName);
+            linkElement.click();
+            
+            showAlert('Đã xuất dữ liệu thành công!', 'success', 'admin-result');
         }
 
-        // Export user data
-        function exportUserData() {
+        // Import tasks from JSON file
+        function importTasks() {
+            document.getElementById('import-file').click();
+        }
+
+        document.getElementById('import-file').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedTasks = JSON.parse(e.target.result);
+                    tasks = importedTasks;
+                    localStorage.setItem('telegram_bot_tasks', JSON.stringify(tasks));
+                    renderTaskList();
+                    showAlert('Đã nhập dữ liệu thành công!', 'success', 'admin-result');
+                } catch (error) {
+                    showAlert('Lỗi: File không hợp lệ', 'danger', 'admin-result');
+                }
+            };
+            reader.readAsText(file);
+            
+            // Reset file input
+            e.target.value = '';
+        });
+
+        // View user stats
+        function viewUserStats() {
             showAlert('Chức năng này cần kết nối với cơ sở dữ liệu phía server', 'info', 'admin-result');
         }
 

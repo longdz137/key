@@ -67,12 +67,12 @@
     <script src="script.js"></script>
     <script>
         // Load nội dung quản trị khi tab được click
-        document.querySelector('.tab[onclick="openTab(\'adminTab\')"]').addEventListener('click', function() {
+        document.querySelector('.tab[onclick="openTab(\'admin\')"]').addEventListener('click', function() {
             if (document.getElementById('adminTab').innerHTML.trim() === '') {
                 fetch('admin.html')
                     .then(response => response.text())
                     .then(html => {
-                        document.getElementById('adminTab').innerHTML = html;
+                        document.getElementById('admin').innerHTML = html;
                     });
             }
         });

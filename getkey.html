@@ -60,22 +60,33 @@
         
         <!-- Tab Quản Trị -->
         <div id="adminTab" class="tab-content">
-            <!-- Nội dung quản trị sẽ được load từ file admin.html -->
+            <iframe id="admin-iframe" style="width: 100%; border: none; min-height: 500px;" src="about:blank"></iframe>
         </div>
     </div>
 
     <script src="script.js"></script>
     <script>
-        // Load nội dung quản trị khi tab được click
-        document.querySelector('.tab[onclick="openTab(\'admin\')"]').addEventListener('click', function() {
-            if (document.getElementById('adminTab').innerHTML.trim() === '') {
-                fetch('admin.html')
-                    .then(response => response.text())
-                    .then(html => {
-                        document.getElementById('admin').innerHTML = html;
-                    });
+        // Load nội dung admin khi tab được click
+        document.querySelector('.tab[onclick="openTab(\'adminTab\')"]').addEventListener('click', function() {
+            const adminIframe = document.getElementById('admin-iframe');
+            if (adminIframe.src === 'about:blank') {
+                adminIframe.src = 'admin.html';
             }
         });
+
+        function openTab(tabId) {
+            // Ẩn tất cả các tab
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Hiển thị tab được chọn
+            document.getElementById(tabId).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
     </script>
 </body>
 </html>

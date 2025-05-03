@@ -3,49 +3,255 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hệ Thống Quản Lý Key - Bot Telegram</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Hệ Thống Lấy Key - Bot Telegram</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4285f4;
+            --secondary-color: #34a853;
+            --accent-color: #ea4335;
+            --light-color: #f8f9fa;
+            --dark-color: #202124;
+            --border-radius: 12px;
+            --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f7fa;
+            color: var(--dark-color);
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+        
+        h1 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+        
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: var(--primary-color);
+            border-radius: 3px;
+        }
+        
+        h2 {
+            color: var(--dark-color);
+            margin-top: 0;
+            font-size: 1.4rem;
+            text-align: center;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+        
+        input[type="text"],
+        input[type="file"] {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1px solid #dfe1e5;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        
+        input[type="text"]:focus,
+        input[type="file"]:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.2);
+            outline: none;
+        }
+        
+        button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: background-color 0.3s, transform 0.2s;
+            width: 100%;
+            margin-bottom: 0.5rem;
+        }
+        
+        button:hover {
+            background-color: #3367d6;
+            transform: translateY(-2px);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        button.secondary {
+            background-color: var(--secondary-color);
+        }
+        
+        button.secondary:hover {
+            background-color: #2d924a;
+        }
+        
+        .button-icon {
+            margin-right: 8px;
+        }
+        
+        #user-result {
+            margin: 1.5rem 0;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            display: none;
+        }
+        
+        .success {
+            background-color: #e6f4ea;
+            color: #34a853;
+            border-left: 4px solid var(--secondary-color);
+        }
+        
+        .error {
+            background-color: #fce8e6;
+            color: var(--accent-color);
+            border-left: 4px solid var(--accent-color);
+        }
+        
+        .info {
+            background-color: #e8f0fe;
+            color: var(--primary-color);
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        #key-section {
+            margin-top: 1.5rem;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .instructions {
+            background-color: var(--light-color);
+            padding: 1.2rem;
+            border-radius: var(--border-radius);
+            margin-top: 2rem;
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .instructions h3 {
+            margin-top: 0;
+            color: var(--primary-color);
+            font-size: 1.2rem;
+        }
+        
+        .instructions ol {
+            padding-left: 1.2rem;
+            margin-bottom: 0;
+        }
+        
+        .instructions li {
+            margin-bottom: 0.5rem;
+        }
+        
+        code {
+            background-color: #f1f3f4;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        @media (max-width: 640px) {
+            .container {
+                margin: 1rem;
+                padding: 1.5rem;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <h1>HỆ THỐNG QUẢN LÝ KEY BOT TELEGRAM</h1>
+        <h1>HỆ THỐNG LẤY KEY BOT TELEGRAM</h1>
         
-        <!-- Đã xóa phần tabs vì chỉ còn 1 tab người dùng -->
-        
-        <!-- Tab Người Dùng -->
-        <div id="userTab" class="tab-content active">
+        <div id="userTab">
             <h2>Lấy Key Xác Nhận</h2>
             
             <div class="form-group">
-                <label for="user-id">ID Telegram của bạn:</label>
-                <input type="text" id="user-id" placeholder="Nhập ID Telegram (lấy bằng lệnh /myid trong bot)">
+                <label for="user-id"><i class="fas fa-user-circle button-icon"></i> ID Telegram của bạn:</label>
+                <input type="text" id="user-id" placeholder="Nhập ID Telegram (dùng lệnh /myid trong bot)">
             </div>
             
             <div class="form-group">
-                <label for="task-link">Link nhiệm vụ đã hoàn thành:</label>
+                <label for="task-link"><i class="fas fa-link button-icon"></i> Link nhiệm vụ đã hoàn thành:</label>
                 <input type="text" id="task-link" placeholder="Dán link nhiệm vụ từ bot vào đây">
             </div>
             
             <div class="form-group">
-                <label for="screenshot">Ảnh chụp màn hình (tùy chọn):</label>
+                <label for="screenshot"><i class="fas fa-camera button-icon"></i> Ảnh chụp màn hình (tùy chọn):</label>
                 <input type="file" id="screenshot" accept="image/*">
             </div>
             
-            <button onclick="getConfirmationKey()">Lấy Key Xác Nhận</button>
+            <button onclick="getConfirmationKey()">
+                <i class="fas fa-key button-icon"></i> Lấy Key Xác Nhận
+            </button>
             
             <div id="user-result" class="result"></div>
             
             <div id="key-section" class="hidden">
                 <div class="form-group">
-                    <label for="confirmation-key">Key xác nhận của bạn:</label>
+                    <label for="confirmation-key"><i class="fas fa-keyboard button-icon"></i> Key xác nhận của bạn:</label>
                     <input type="text" id="confirmation-key" readonly>
                 </div>
-                <button onclick="copyKey()">Sao Chép Key</button>
-                <button class="secondary" onclick="sendToTelegram()">Gửi Về Bot</button>
+                <button onclick="copyKey()">
+                    <i class="far fa-copy button-icon"></i> Sao Chép Key
+                </button>
+                <button class="secondary" onclick="sendToTelegram()">
+                    <i class="fab fa-telegram button-icon"></i> Gửi Về Bot
+                </button>
             </div>
             
             <div class="instructions">
-                <h3>Hướng dẫn sử dụng:</h3>
+                <h3><i class="fas fa-info-circle"></i> Hướng dẫn sử dụng:</h3>
                 <ol>
                     <li>Hoàn thành nhiệm vụ từ link được bot cung cấp</li>
                     <li>Nhập ID Telegram và link nhiệm vụ vào form trên</li>
@@ -56,6 +262,77 @@
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        // Dữ liệu nhiệm vụ mẫu
+        const tasks = {
+            "https://yeumoney.com/BWq9l": { key: "anhcodedz1235", reward: 100 },
+            "https://yeumoney.com/wr--U": { key: "anhcodedz1223", reward: 100 }
+        };
+
+        // Hiển thị thông báo
+        function showResult(message, type, target) {
+            const resultDiv = document.getElementById(target);
+            resultDiv.innerHTML = message;
+            resultDiv.className = 'result ' + type;
+            resultDiv.style.display = 'block';
+            
+            setTimeout(() => {
+                resultDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        // Lấy key xác nhận
+        function getConfirmationKey() {
+            const userId = document.getElementById('user-id').value.trim();
+            const taskLink = document.getElementById('task-link').value.trim();
+            
+            if (!userId || !taskLink) {
+                showResult('Vui lòng điền đầy đủ ID Telegram và Link nhiệm vụ', 'error', 'user-result');
+                return;
+            }
+            
+            let foundTask = null;
+            for (const [link, task] of Object.entries(tasks)) {
+                if (taskLink.includes(link)) {
+                    foundTask = task;
+                    break;
+                }
+            }
+            
+            if (!foundTask) {
+                showResult('Link nhiệm vụ không hợp lệ hoặc không tồn tại', 'error', 'user-result');
+                return;
+            }
+            
+            const timestamp = Math.floor(Date.now() / 1000);
+            const confirmationKey = `${foundTask.key}-${userId}-${timestamp}`;
+            
+            document.getElementById('confirmation-key').value = confirmationKey;
+            document.getElementById('key-section').classList.remove('hidden');
+            
+            showResult(`✅ Key xác nhận đã được tạo! Bạn sẽ nhận được ${foundTask.reward} VNĐ khi xác nhận với bot.`, 'success', 'user-result');
+        }
+
+        // Sao chép key
+        function copyKey() {
+            const keyInput = document.getElementById('confirmation-key');
+            keyInput.select();
+            document.execCommand('copy');
+            
+            const originalText = keyInput.value;
+            keyInput.value = "Đã sao chép!";
+            setTimeout(() => {
+                keyInput.value = originalText;
+            }, 2000);
+            
+            showResult('Key đã được sao chép vào clipboard!', 'info', 'user-result');
+        }
+
+        // Gửi key về Telegram (giả lập)
+        function sendToTelegram() {
+            const key = document.getElementById('confirmation-key').value;
+            showResult(`Mở Telegram và gửi lệnh: <code>/nhapkey ${key}</code> cho bot`, 'info', 'user-result');
+        }
+    </script>
 </body>
 </html>

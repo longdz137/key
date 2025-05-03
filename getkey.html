@@ -3,247 +3,372 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nhận Key Xác Nhận - Bot Telegram</title>
+    <title>Hệ Thống Quản Lý Key - Bot Telegram</title>
     <style>
+        :root {
+            --primary-color: #4CAF50;
+            --secondary-color: #2196F3;
+            --danger-color: #f44336;
+            --warning-color: #ff9800;
+            --dark-color: #333;
+            --light-color: #f5f5f5;
+        }
         body {
             font-family: 'Arial', sans-serif;
             line-height: 1.6;
             margin: 0;
-            padding: 20px;
-            background-color: #f5f5f5;
-            color: #333;
-            background-image: linear-gradient(to bottom right, #e6f7ff, #f0fff0);
+            padding: 0;
+            background-color: #f9f9f9;
+            color: var(--dark-color);
         }
         .container {
-            max-width: 600px;
-            margin: 0 auto;
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 20px;
             background: white;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        h1, h2, h3 {
+            color: var(--primary-color);
+            margin-top: 0;
         }
         h1 {
-            color: #2e7d32;
             text-align: center;
-            margin-bottom: 25px;
-            border-bottom: 2px solid #4caf50;
             padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary-color);
+        }
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            background: #f1f1f1;
+            margin-right: 5px;
+            border-radius: 5px 5px 0 0;
+        }
+        .tab.active {
+            background: var(--primary-color);
+            color: white;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
         }
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
         label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 5px;
             font-weight: bold;
-            color: #2e7d32;
         }
-        input[type="text"], input[type="number"] {
+        input[type="text"], input[type="password"], input[type="number"], select {
             width: 100%;
             padding: 10px;
             border: 1px solid #ddd;
-            border-radius: 5px;
+            border-radius: 4px;
             box-sizing: border-box;
             font-size: 16px;
-            transition: border 0.3s;
-        }
-        input[type="text"]:focus, input[type="number"]:focus {
-            border-color: #4caf50;
-            outline: none;
-            box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
         }
         button {
-            background-color: #4caf50;
+            background-color: var(--primary-color);
             color: white;
             border: none;
-            padding: 12px 20px;
-            border-radius: 5px;
+            padding: 10px 15px;
+            border-radius: 4px;
             cursor: pointer;
             font-size: 16px;
-            width: 100%;
             transition: background-color 0.3s;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
         }
         button:hover {
-            background-color: #388e3c;
+            background-color: #45a049;
+        }
+        button.danger {
+            background-color: var(--danger-color);
+        }
+        button.warning {
+            background-color: var(--warning-color);
+        }
+        button.secondary {
+            background-color: var(--secondary-color);
         }
         .result {
-            margin-top: 25px;
-            padding: 15px;
-            border-radius: 5px;
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 4px;
             display: none;
-            font-size: 16px;
         }
         .success {
-            background-color: #e8f5e9;
-            color: #1b5e20;
-            border: 1px solid #a5d6a7;
+            background-color: #dff0d8;
+            color: #3c763d;
+            border: 1px solid #d6e9c6;
         }
         .error {
-            background-color: #ffebee;
-            color: #c62828;
-            border: 1px solid #ef9a9a;
+            background-color: #f2dede;
+            color: #a94442;
+            border: 1px solid #ebccd1;
         }
-        .instructions {
-            margin-top: 30px;
-            padding: 15px;
-            background-color: #e8f5e9;
-            border-radius: 5px;
-            border-left: 4px solid #4caf50;
+        .info {
+            background-color: #d9edf7;
+            color: #31708f;
+            border: 1px solid #bce8f1;
         }
-        .task-info {
-            background-color: #e3f2fd;
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .admin-section {
+            background-color: #fff8e1;
             padding: 15px;
             border-radius: 5px;
-            margin-bottom: 20px;
-            border-left: 4px solid #2196f3;
+            border-left: 4px solid var(--warning-color);
+            margin-top: 20px;
         }
         .hidden {
             display: none;
-        }
-        .step {
-            display: flex;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-        .step-number {
-            background-color: #4caf50;
-            color: white;
-            width: 25px;
-            height: 25px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 10px;
-            font-weight: bold;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>NHẬN KEY XÁC NHẬN</h1>
+        <h1>HỆ THỐNG QUẢN LÝ KEY BOT TELEGRAM</h1>
         
-        <div class="task-info">
-            <h3>Hướng dẫn nhận key:</h3>
-            <div class="step">
-                <div class="step-number">1</div>
-                <div>Nhận nhiệm vụ từ bot Telegram bằng lệnh <strong>/kiemtien</strong></div>
-            </div>
-            <div class="step">
-                <div class="step-number">2</div>
-                <div>Truy cập link nhiệm vụ và hoàn thành yêu cầu</div>
-            </div>
-            <div class="step">
-                <div class="step-number">3</div>
-                <div>Nhập thông tin bên dưới để nhận key xác nhận</div>
-            </div>
-            <div class="step">
-                <div class="step-number">4</div>
-                <div>Gửi key cho bot bằng lệnh <strong>/nhapkey [key]</strong></div>
-            </div>
+        <div class="tabs">
+            <div class="tab active" onclick="openTab('userTab')">Người Dùng</div>
+            <div class="tab" onclick="openTab('adminTab')">Quản Trị</div>
         </div>
         
-        <div class="form-group">
-            <label for="userId">ID Telegram của bạn:</label>
-            <input type="text" id="userId" placeholder="Nhập ID Telegram (lấy bằng lệnh /myid trong bot)" required>
-        </div>
-        
-        <div class="form-group">
-            <label for="taskLink">Link nhiệm vụ bạn đã hoàn thành:</label>
-            <input type="text" id="taskLink" placeholder="Dán link nhiệm vụ từ bot vào đây" required>
-        </div>
-        
-        <div class="form-group">
-            <label for="screenshot">Ảnh chụp màn hình hoàn thành (tùy chọn):</label>
-            <input type="file" id="screenshot" accept="image/*">
-        </div>
-        
-        <button onclick="getConfirmationKey()">NHẬN KEY XÁC NHẬN</button>
-        
-        <div id="result" class="result"></div>
-        
-        <div id="keySection" class="hidden">
+        <!-- Tab Người Dùng -->
+        <div id="userTab" class="tab-content active">
+            <h2>Lấy Key Xác Nhận</h2>
+            
             <div class="form-group">
-                <label for="confirmationKey">Key xác nhận của bạn:</label>
-                <input type="text" id="confirmationKey" readonly>
+                <label for="user-id">ID Telegram của bạn:</label>
+                <input type="text" id="user-id" placeholder="Nhập ID Telegram (lấy bằng lệnh /myid trong bot)">
             </div>
-            <button onclick="copyKey()">SAO CHÉP KEY</button>
+            
+            <div class="form-group">
+                <label for="task-link">Link nhiệm vụ đã hoàn thành:</label>
+                <input type="text" id="task-link" placeholder="Dán link nhiệm vụ từ bot vào đây">
+            </div>
+            
+            <div class="form-group">
+                <label for="screenshot">Ảnh chụp màn hình (tùy chọn):</label>
+                <input type="file" id="screenshot" accept="image/*">
+            </div>
+            
+            <button onclick="getConfirmationKey()">Lấy Key Xác Nhận</button>
+            
+            <div id="user-result" class="result"></div>
+            
+            <div id="key-section" class="hidden">
+                <div class="form-group">
+                    <label for="confirmation-key">Key xác nhận của bạn:</label>
+                    <input type="text" id="confirmation-key" readonly>
+                </div>
+                <button onclick="copyKey()">Sao Chép Key</button>
+                <button class="secondary" onclick="sendToTelegram()">Gửi Về Bot</button>
+            </div>
+            
+            <div class="instructions">
+                <h3>Hướng dẫn sử dụng:</h3>
+                <ol>
+                    <li>Hoàn thành nhiệm vụ từ link được bot cung cấp</li>
+                    <li>Nhập ID Telegram và link nhiệm vụ vào form trên</li>
+                    <li>Nhấn "Lấy Key Xác Nhận" để nhận key</li>
+                    <li>Sao chép key và gửi cho bot bằng lệnh <code>/nhapkey [key-của-bạn]</code></li>
+                </ol>
+            </div>
         </div>
         
-        <div class="instructions">
-            <h3>Hướng dẫn sử dụng key:</h3>
-            <ol>
-                <li>Sao chép key xác nhận bên trên</li>
-                <li>Quay lại bot Telegram và nhập lệnh: <code>/nhapkey [key-của-bạn]</code></li>
-                <li>Bot sẽ xác nhận và cộng tiền vào tài khoản của bạn</li>
-            </ol>
-            <p><strong>Lưu ý quan trọng:</strong></p>
-            <ul>
-                <li>Mỗi key chỉ sử dụng được 1 lần</li>
-                <li>Key có thời hạn trong 30 phút</li>
-                <li>Không chia sẻ key với người khác</li>
-                <li>Nếu gặp vấn đề, liên hệ admin qua lệnh <code>/calladmin</code></li>
-            </ul>
+        <!-- Tab Quản Trị -->
+        <div id="adminTab" class="tab-content">
+            <h2>Khu Vực Quản Trị</h2>
+            
+            <div class="form-group">
+                <label for="admin-username">Tài khoản Admin:</label>
+                <input type="text" id="admin-username" placeholder="Nhập username admin">
+            </div>
+            
+            <div class="form-group">
+                <label for="admin-password">Mật khẩu:</label>
+                <input type="password" id="admin-password" placeholder="Nhập mật khẩu">
+            </div>
+            
+            <button onclick="adminLogin()">Đăng Nhập</button>
+            
+            <div id="admin-login-result" class="result"></div>
+            
+            <div id="admin-panel" class="hidden">
+                <h3>Quản Lý Key Nhiệm Vụ</h3>
+                
+                <div class="form-group">
+                    <label for="new-task-link">Link nhiệm vụ mới:</label>
+                    <input type="text" id="new-task-link" placeholder="Nhập link nhiệm vụ">
+                </div>
+                
+                <div class="form-group">
+                    <label for="new-task-key">Key xác nhận:</label>
+                    <input type="text" id="new-task-key" placeholder="Nhập key xác nhận tương ứng">
+                </div>
+                
+                <div class="form-group">
+                    <label for="task-reward">Phần thưởng (VNĐ):</label>
+                    <input type="number" id="task-reward" placeholder="Nhập số tiền thưởng" value="100">
+                </div>
+                
+                <button onclick="addNewTask()">Thêm Nhiệm Vụ</button>
+                <button class="danger" onclick="resetTaskList()">Reset Danh Sách</button>
+                
+                <div id="admin-result" class="result"></div>
+                
+                <h3>Danh Sách Nhiệm Vụ Hiện Tại</h3>
+                <table id="task-table">
+                    <thead>
+                        <tr>
+                            <th>STT</th>
+                            <th>Link Nhiệm Vụ</th>
+                            <th>Key Xác Nhận</th>
+                            <th>Phần Thưởng</th>
+                            <th>Hành Động</th>
+                        </tr>
+                    </thead>
+                    <tbody id="task-list">
+                        <!-- Danh sách nhiệm vụ sẽ được thêm vào đây bằng JS -->
+                    </tbody>
+                </table>
+                
+                <div class="admin-section">
+                    <h3>Quản Lý Người Dùng</h3>
+                    <button class="secondary" onclick="viewUserStats()">Xem Thống Kê Người Dùng</button>
+                    <button class="warning" onclick="exportUserData()">Xuất Dữ Liệu Người Dùng</button>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
-        // Danh sách key tương ứng với các link nhiệm vụ
-        const TASK_KEYS = {
-            "https://yeumoney.com/BWq9l": "anhcodedz1235",
-            "https://yeumoney.com/wr--U": "anhcodedz1223",
-            "https://yeumoney.com/GG2eLN": "anhcodeyeuem",
-            "https://yeumoney.com/9qV-db": "anhcodedz1354",
-            "https://yeumoney.com/iCv-DF2": "anhcodekeycuoihaha"
+        // Dữ liệu nhiệm vụ (trong thực tế nên lưu trên server)
+        let tasks = {
+            "https://yeumoney.com/BWq9l": { key: "anhcodedz1235", reward: 100 },
+            "https://yeumoney.com/wr--U": { key: "anhcodedz1223", reward: 100 },
+            "https://yeumoney.com/GG2eLN": { key: "anhcodeyeuem", reward: 100 },
+            "https://yeumoney.com/9qV-db": { key: "anhcodedz1354", reward: 100 },
+            "https://yeumoney.com/iCv-DF2": { key: "anhcodekeycuoihaha", reward: 100 }
         };
 
+        // Admin credentials (trong thực tế nên xác thực qua backend)
+        const ADMIN_CREDENTIALS = {
+            username: "admin",
+            password: "admin123"
+        };
+
+        // Hiển thị danh sách nhiệm vụ
+        function renderTaskList() {
+            const taskList = document.getElementById('task-list');
+            taskList.innerHTML = '';
+            
+            let index = 1;
+            for (const [link, task] of Object.entries(tasks)) {
+                const row = document.createElement('tr');
+                
+                row.innerHTML = `
+                    <td>${index}</td>
+                    <td>${link}</td>
+                    <td>${task.key}</td>
+                    <td>${task.reward} VNĐ</td>
+                    <td>
+                        <button class="danger" onclick="removeTask('${link}')">Xóa</button>
+                    </td>
+                `;
+                
+                taskList.appendChild(row);
+                index++;
+            }
+        }
+
+        // Mở tab
+        function openTab(tabId) {
+            // Ẩn tất cả các tab
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Hiển thị tab được chọn
+            document.getElementById(tabId).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        // Lấy key xác nhận cho người dùng
         function getConfirmationKey() {
-            const userId = document.getElementById('userId').value.trim();
-            const taskLink = document.getElementById('taskLink').value.trim();
-            const resultDiv = document.getElementById('result');
+            const userId = document.getElementById('user-id').value.trim();
+            const taskLink = document.getElementById('task-link').value.trim();
+            const resultDiv = document.getElementById('user-result');
             
             // Kiểm tra input
             if (!userId || !taskLink) {
-                showResult('Vui lòng điền đầy đủ ID Telegram và Link nhiệm vụ', 'error');
+                showResult('Vui lòng điền đầy đủ ID Telegram và Link nhiệm vụ', 'error', 'user-result');
                 return;
             }
             
-            // Kiểm tra ID Telegram (cơ bản)
+            // Kiểm tra ID Telegram
             if (isNaN(userId) || userId.length < 5) {
-                showResult('ID Telegram không hợp lệ. Vui lòng kiểm tra lại', 'error');
+                showResult('ID Telegram không hợp lệ', 'error', 'user-result');
                 return;
             }
             
-            // Kiểm tra link nhiệm vụ có trong danh sách
-            let foundKey = null;
-            for (const [link, key] of Object.entries(TASK_KEYS)) {
+            // Kiểm tra link nhiệm vụ
+            let foundTask = null;
+            for (const [link, task] of Object.entries(tasks)) {
                 if (taskLink.includes(link)) {
-                    foundKey = key;
+                    foundTask = task;
                     break;
                 }
             }
             
-            if (!foundKey) {
-                showResult('Link nhiệm vụ không hợp lệ. Vui lòng kiểm tra lại', 'error');
+            if (!foundTask) {
+                showResult('Link nhiệm vụ không hợp lệ hoặc không tồn tại', 'error', 'user-result');
                 return;
             }
             
-            // Tạo key xác nhận (trong thực tế nên kết nối với backend)
+            // Tạo key xác nhận
             const timestamp = Math.floor(Date.now() / 1000);
-            const confirmationKey = `${foundKey}-${userId}-${timestamp}`;
+            const confirmationKey = `${foundTask.key}-${userId}-${timestamp}`;
             
             // Hiển thị key
-            document.getElementById('confirmationKey').value = confirmationKey;
-            document.getElementById('keySection').classList.remove('hidden');
+            document.getElementById('confirmation-key').value = confirmationKey;
+            document.getElementById('key-section').classList.remove('hidden');
             
-            showResult('✅ Key xác nhận đã được tạo thành công! Hãy sao chép và gửi cho bot.', 'success');
+            showResult(`✅ Key xác nhận đã được tạo! Bạn sẽ nhận được ${foundTask.reward} VNĐ khi xác nhận với bot.`, 'success', 'user-result');
         }
-        
+
+        // Sao chép key
         function copyKey() {
-            const keyInput = document.getElementById('confirmationKey');
+            const keyInput = document.getElementById('confirmation-key');
             keyInput.select();
             document.execCommand('copy');
             
@@ -253,17 +378,101 @@
             setTimeout(() => {
                 keyInput.value = originalText;
             }, 2000);
+            
+            showResult('Key đã được sao chép vào clipboard!', 'info', 'user-result');
         }
-        
-        function showResult(message, type) {
-            const resultDiv = document.getElementById('result');
+
+        // Gửi key về Telegram (giả lập)
+        function sendToTelegram() {
+            const key = document.getElementById('confirmation-key').value;
+            showResult(`Mở Telegram và gửi lệnh: <code>/nhapkey ${key}</code> cho bot`, 'info', 'user-result');
+        }
+
+        // Đăng nhập admin
+        function adminLogin() {
+            const username = document.getElementById('admin-username').value.trim();
+            const password = document.getElementById('admin-password').value.trim();
+            
+            if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
+                document.getElementById('admin-panel').classList.remove('hidden');
+                showResult('Đăng nhập thành công!', 'success', 'admin-login-result');
+                renderTaskList();
+            } else {
+                showResult('Sai tài khoản hoặc mật khẩu', 'error', 'admin-login-result');
+            }
+        }
+
+        // Thêm nhiệm vụ mới
+        function addNewTask() {
+            const link = document.getElementById('new-task-link').value.trim();
+            const key = document.getElementById('new-task-key').value.trim();
+            const reward = parseInt(document.getElementById('task-reward').value);
+            
+            if (!link || !key) {
+                showResult('Vui lòng điền đầy đủ link và key', 'error', 'admin-result');
+                return;
+            }
+            
+            if (link in tasks) {
+                showResult('Link nhiệm vụ đã tồn tại', 'error', 'admin-result');
+                return;
+            }
+            
+            tasks[link] = { key, reward };
+            renderTaskList();
+            
+            // Reset form
+            document.getElementById('new-task-link').value = '';
+            document.getElementById('new-task-key').value = '';
+            
+            showResult('Đã thêm nhiệm vụ mới thành công!', 'success', 'admin-result');
+        }
+
+        // Xóa nhiệm vụ
+        function removeTask(link) {
+            if (confirm(`Bạn có chắc muốn xóa nhiệm vụ:\n${link}`)) {
+                delete tasks[link];
+                renderTaskList();
+                showResult('Đã xóa nhiệm vụ thành công', 'success', 'admin-result');
+            }
+        }
+
+        // Reset danh sách nhiệm vụ
+        function resetTaskList() {
+            if (confirm('Bạn có chắc muốn RESET toàn bộ danh sách nhiệm vụ?')) {
+                tasks = {};
+                renderTaskList();
+                showResult('Đã reset danh sách nhiệm vụ', 'info', 'admin-result');
+            }
+        }
+
+        // Xem thống kê người dùng (giả lập)
+        function viewUserStats() {
+            showResult('Chức năng này cần kết nối với cơ sở dữ liệu phía server', 'info', 'admin-result');
+        }
+
+        // Xuất dữ liệu người dùng (giả lập)
+        function exportUserData() {
+            showResult('Chức năng này cần kết nối với cơ sở dữ liệu phía server', 'info', 'admin-result');
+        }
+
+        // Hiển thị kết quả
+        function showResult(message, type, target) {
+            const resultDiv = document.getElementById(target);
             resultDiv.innerHTML = message;
             resultDiv.className = 'result ' + type;
             resultDiv.style.display = 'block';
             
-            // Cuộn đến kết quả
-            resultDiv.scrollIntoView({ behavior: 'smooth' });
+            // Tự động ẩn thông báo sau 5 giây
+            setTimeout(() => {
+                resultDiv.style.display = 'none';
+            }, 5000);
         }
+
+        // Khởi tạo
+        document.addEventListener('DOMContentLoaded', function() {
+            renderTaskList();
+        });
     </script>
 </body>
 </html>

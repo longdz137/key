@@ -205,4 +205,21 @@ function showResult(message, type, target) {
 // Khởi tạo
 document.addEventListener('DOMContentLoaded', function() {
     renderTaskList();
+}
+
+// Hàm để giao tiếp giữa iframe và trang chính
+function postMessageToAdmin(action, data) {
+    const adminIframe = document.getElementById('admin-iframe');
+    if (adminIframe && adminIframe.contentWindow) {
+        adminIframe.contentWindow.postMessage({ action, data }, '*');
+    }
+}
+
+// Xử lý message từ iframe admin
+window.addEventListener('message', function(event) {
+    if (event.data && event.data.action === 'adminLoginSuccess') {
+        // Xử lý khi admin login thành công từ iframe
+        document.getElementById('admin-panel').classList.remove('hidden');
+    }
+    // Có thể thêm các action khác tùy nhu cầu
 });

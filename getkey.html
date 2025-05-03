@@ -197,6 +197,40 @@
             display: none;
         }
         
+        .task-dropdown {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+        
+        .task-dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: white;
+            min-width: 100%;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            border-radius: var(--border-radius);
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .task-dropdown-content a {
+            color: var(--dark-color);
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .task-dropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
+        
+        .show {
+            display: block;
+        }
+        
         @media (max-width: 640px) {
             .container {
                 margin: 1rem;
@@ -223,7 +257,10 @@
             
             <div class="form-group">
                 <label for="task-link"><i class="fas fa-link button-icon"></i> Link nhiệm vụ đã hoàn thành:</label>
-                <input type="text" id="task-link" placeholder="Dán link nhiệm vụ từ bot vào đây">
+                <div class="task-dropdown">
+                    <input type="text" id="task-link" placeholder="Dán link nhiệm vụ từ bot vào đây" oninput="showTaskSuggestions()">
+                    <div id="task-suggestions" class="task-dropdown-content"></div>
+                </div>
             </div>
             
             <div class="form-group">
@@ -263,11 +300,65 @@
     </div>
 
     <script>
-        // Dữ liệu nhiệm vụ mẫu
-        const tasks = {
-            "https://yeumoney.com/BWq9l": { key: "anhcodedz1235", reward: 100 },
-            "https://yeumoney.com/wr--U": { key: "anhcodedz1223", reward: 100 }
-        };
+        // Lấy dữ liệu nhiệm vụ từ localStorage hoặc sử dụng dữ liệu mẫu
+        function getTasks() {
+            const savedTasks = localStorage.getItem('telegram_bot_tasks');
+            if (savedTasks) {
+                return JSON.parse(savedTasks);
+            }
+            
+            // Dữ liệu mẫu nếu không có trong localStorage
+            return {
+                "https://yeumoney.com/BWq9l": { key: "anhcodedz1235", reward: 100 },
+                "https://yeumoney.com/wr--U": { key: "anhcodedz1223", reward: 100 }
+            };
+        }
+
+        // Hiển thị gợi ý nhiệm vụ
+        function showTaskSuggestions() {
+            const input = document.getElementById('task-link').value.toLowerCase();
+            const suggestions = document.getElementById('task-suggestions');
+            suggestions.innerHTML = '';
+            
+            if (!input) {
+                suggestions.classList.remove('show');
+                return;
+            }
+            
+            const tasks = getTasks();
+            let hasSuggestions = false;
+            
+            for (const [link, task] of Object.entries(tasks)) {
+                if (link.toLowerCase().includes(input)) {
+                    const a = document.createElement('a');
+                    a.href = '#';
+                    a.textContent = link;
+                    a.onclick = function(e) {
+                        e.preventDefault();
+                        document.getElementById('task-link').value = link;
+                        suggestions.classList.remove('show');
+                    };
+                    suggestions.appendChild(a);
+                    hasSuggestions = true;
+                }
+            }
+            
+            if (hasSuggestions) {
+                suggestions.classList.add('show');
+            } else {
+                suggestions.classList.remove('show');
+            }
+        }
+
+        // Đóng dropdown khi click bên ngoài
+        window.onclick = function(event) {
+            if (!event.target.matches('#task-link')) {
+                const suggestions = document.getElementById('task-suggestions');
+                if (suggestions.classList.contains('show')) {
+                    suggestions.classList.remove('show');
+                }
+            }
+        }
 
         // Hiển thị thông báo
         function showResult(message, type, target) {
@@ -291,7 +382,9 @@
                 return;
             }
             
+            const tasks = getTasks();
             let foundTask = null;
+            
             for (const [link, task] of Object.entries(tasks)) {
                 if (taskLink.includes(link)) {
                     foundTask = task;
@@ -333,6 +426,15 @@
             const key = document.getElementById('confirmation-key').value;
             showResult(`Mở Telegram và gửi lệnh: <code>/nhapkey ${key}</code> cho bot`, 'info', 'user-result');
         }
+
+        // Tải danh sách nhiệm vụ khi trang được tải
+        document.addEventListener('DOMContentLoaded', function() {
+            // Kiểm tra xem có dữ liệu từ admin không
+            if (!localStorage.getItem('telegram_bot_tasks')) {
+                // Nếu không có, sử dụng dữ liệu mẫu
+                localStorage.setItem('telegram_bot_tasks', JSON.stringify(getTasks()));
+            }
+        });
     </script>
 </body>
 </html>

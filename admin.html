@@ -1,352 +1,61 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trang Quản Trị - Hệ Thống Key</title>
-    <style>
-        :root {
-            --primary-color: #2196F3;
-            --danger-color: #f44336;
-            --warning-color: #ff9800;
-            --dark-color: #333;
-            --light-color: #f5f5f5;
-        }
-        body {
-            font-family: 'Arial', sans-serif;
-            line-height: 1.6;
-            margin: 0;
-            padding: 20px;
-            background-color: #f9f9f9;
-            color: var(--dark-color);
-        }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: white;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-        h1 {
-            color: var(--primary-color);
-            text-align: center;
-            margin-bottom: 25px;
-            border-bottom: 2px solid var(--primary-color);
-            padding-bottom: 10px;
-        }
-        .form-group {
-            margin-bottom: 20px;
-        }
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-            color: var(--primary-color);
-        }
-        input[type="text"], input[type="password"], input[type="number"] {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            box-sizing: border-box;
-            font-size: 16px;
-        }
-        button {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            margin-top: 10px;
-        }
-        button.danger {
-            background-color: var(--danger-color);
-        }
-        button.warning {
-            background-color: var(--warning-color);
-        }
-        .result {
-            margin-top: 20px;
-            padding: 15px;
-            border-radius: 5px;
-            display: none;
-        }
-        .success {
-            background-color: #e8f5e9;
-            color: #1b5e20;
-            border: 1px solid #a5d6a7;
-        }
-        .error {
-            background-color: #ffebee;
-            color: #c62828;
-            border: 1px solid #ef9a9a;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        table, th, td {
-            border: 1px solid #ddd;
-        }
-        th, td {
-            padding: 12px;
-            text-align: left;
-        }
-        th {
-            background-color: var(--primary-color);
-            color: white;
-        }
-        tr:nth-child(even) {
-            background-color: #f2f2f2;
-        }
-        .hidden {
-            display: none;
-        }
-        .back-link {
-            text-align: center;
-            margin-top: 20px;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>TRANG QUẢN TRỊ HỆ THỐNG</h1>
-        
-        <div id="login-section">
-            <div class="form-group">
-                <label for="admin-username">Tài khoản Admin:</label>
-                <input type="text" id="admin-username" placeholder="Nhập username admin">
-            </div>
-            
-            <div class="form-group">
-                <label for="admin-password">Mật khẩu:</label>
-                <input type="password" id="admin-password" placeholder="Nhập mật khẩu">
-            </div>
-            
-            <button onclick="adminLogin()">Đăng Nhập</button>
-            
-            <div id="admin-login-result" class="result"></div>
-        </div>
-        
-        <div id="admin-panel" class="hidden">
-            <h2>Quản Lý Key Nhiệm Vụ</h2>
-            
-            <div class="form-group">
-                <label for="new-task-link">Link nhiệm vụ mới:</label>
-                <input type="text" id="new-task-link" placeholder="Nhập link nhiệm vụ">
-            </div>
-            
-            <div class="form-group">
-                <label for="new-task-key">Key xác nhận:</label>
-                <input type="text" id="new-task-key" placeholder="Nhập key xác nhận tương ứng">
-            </div>
-            
-            <div class="form-group">
-                <label for="task-reward">Phần thưởng (VNĐ):</label>
-                <input type="number" id="task-reward" placeholder="Nhập số tiền thưởng" value="100">
-            </div>
-            
-            <button onclick="addNewTask()">Thêm Nhiệm Vụ</button>
-            <button class="danger" onclick="resetTaskList()">Reset Danh Sách</button>
-            
-            <div id="admin-result" class="result"></div>
-            
-            <h3>Danh Sách Nhiệm Vụ Hiện Tại</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>STT</th>
-                        <th>Link Nhiệm Vụ</th>
-                        <th>Key Xác Nhận</th>
-                        <th>Phần Thưởng</th>
-                        <th>Hành Động</th>
-                    </tr>
-                </thead>
-                <tbody id="task-list">
-                    <!-- Danh sách nhiệm vụ sẽ được thêm vào đây bằng JS -->
-                </tbody>
-            </table>
-            
-            <div class="back-link">
-                <a href="index.html">Quay lại trang người dùng</a>
-            </div>
-        </div>
+<h2>Khu Vực Quản Trị</h2>
+
+<div class="form-group">
+    <label for="admin-username">Tài khoản Admin:</label>
+    <input type="text" id="admin-username" placeholder="Nhập username admin">
+</div>
+
+<div class="form-group">
+    <label for="admin-password">Mật khẩu:</label>
+    <input type="password" id="admin-password" placeholder="Nhập mật khẩu">
+</div>
+
+<button onclick="adminLogin()">Đăng Nhập</button>
+
+<div id="admin-login-result" class="result"></div>
+
+<div id="admin-panel" class="hidden">
+    <h3>Quản Lý Key Nhiệm Vụ</h3>
+    
+    <div class="form-group">
+        <label for="new-task-link">Link nhiệm vụ mới:</label>
+        <input type="text" id="new-task-link" placeholder="Nhập link nhiệm vụ">
     </div>
-
-    <script>
-        // Đăng nhập admin
-        function adminLogin() {
-            const username = document.getElementById('admin-username').value.trim();
-            const password = document.getElementById('admin-password').value.trim();
-            
-            // Gọi API để đăng nhập (giả lập)
-            fetch('api/adminLogin', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    username: username,
-                    password: password
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    document.getElementById('login-section').classList.add('hidden');
-                    document.getElementById('admin-panel').classList.remove('hidden');
-                    loadTaskList();
-                    showResult('Đăng nhập thành công!', 'success', 'admin-login-result');
-                } else {
-                    showResult('Sai tài khoản hoặc mật khẩu', 'error', 'admin-login-result');
-                }
-            })
-            .catch(error => {
-                showResult('Lỗi kết nối đến server', 'error', 'admin-login-result');
-            });
-        }
-
-        // Tải danh sách nhiệm vụ
-        function loadTaskList() {
-            fetch('api/getTasks')
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        renderTaskList(data.tasks);
-                    } else {
-                        showResult('Lỗi khi tải danh sách nhiệm vụ', 'error', 'admin-result');
-                    }
-                })
-                .catch(error => {
-                    showResult('Lỗi kết nối đến server', 'error', 'admin-result');
-                });
-        }
-
-        // Hiển thị danh sách nhiệm vụ
-        function renderTaskList(tasks) {
-            const taskList = document.getElementById('task-list');
-            taskList.innerHTML = '';
-            
-            let index = 1;
-            for (const [link, task] of Object.entries(tasks)) {
-                const row = document.createElement('tr');
-                
-                row.innerHTML = `
-                    <td>${index}</td>
-                    <td>${link}</td>
-                    <td>${task.key}</td>
-                    <td>${task.reward} VNĐ</td>
-                    <td>
-                        <button class="danger" onclick="removeTask('${link}')">Xóa</button>
-                    </td>
-                `;
-                
-                taskList.appendChild(row);
-                index++;
-            }
-        }
-
-        // Thêm nhiệm vụ mới
-        function addNewTask() {
-            const link = document.getElementById('new-task-link').value.trim();
-            const key = document.getElementById('new-task-key').value.trim();
-            const reward = parseInt(document.getElementById('task-reward').value);
-            
-            if (!link || !key) {
-                showResult('Vui lòng điền đầy đủ link và key', 'error', 'admin-result');
-                return;
-            }
-            
-            // Gọi API để thêm nhiệm vụ
-            fetch('api/addTask', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    link: link,
-                    key: key,
-                    reward: reward
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Reset form
-                    document.getElementById('new-task-link').value = '';
-                    document.getElementById('new-task-key').value = '';
-                    
-                    // Tải lại danh sách
-                    loadTaskList();
-                    showResult('Đã thêm nhiệm vụ mới thành công!', 'success', 'admin-result');
-                } else {
-                    showResult(data.message, 'error', 'admin-result');
-                }
-            })
-            .catch(error => {
-                showResult('Lỗi kết nối đến server', 'error', 'admin-result');
-            });
-        }
-
-        // Xóa nhiệm vụ
-        function removeTask(link) {
-            if (confirm(`Bạn có chắc muốn xóa nhiệm vụ:\n${link}`)) {
-                fetch('api/removeTask', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        link: link
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        loadTaskList();
-                        showResult('Đã xóa nhiệm vụ thành công', 'success', 'admin-result');
-                    } else {
-                        showResult(data.message, 'error', 'admin-result');
-                    }
-                })
-                .catch(error => {
-                    showResult('Lỗi kết nối đến server', 'error', 'admin-result');
-                });
-            }
-        }
-
-        // Reset danh sách nhiệm vụ
-        function resetTaskList() {
-            if (confirm('Bạn có chắc muốn RESET toàn bộ danh sách nhiệm vụ?')) {
-                fetch('api/resetTasks', {
-                    method: 'POST'
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        loadTaskList();
-                        showResult('Đã reset danh sách nhiệm vụ', 'info', 'admin-result');
-                    } else {
-                        showResult(data.message, 'error', 'admin-result');
-                    }
-                })
-                .catch(error => {
-                    showResult('Lỗi kết nối đến server', 'error', 'admin-result');
-                });
-            }
-        }
-
-        // Hiển thị kết quả
-        function showResult(message, type, target) {
-            const resultDiv = document.getElementById(target);
-            resultDiv.innerHTML = message;
-            resultDiv.className = 'result ' + type;
-            resultDiv.style.display = 'block';
-        }
-    </script>
-</body>
-</html>
+    
+    <div class="form-group">
+        <label for="new-task-key">Key xác nhận:</label>
+        <input type="text" id="new-task-key" placeholder="Nhập key xác nhận tương ứng">
+    </div>
+    
+    <div class="form-group">
+        <label for="task-reward">Phần thưởng (VNĐ):</label>
+        <input type="number" id="task-reward" placeholder="Nhập số tiền thưởng" value="100">
+    </div>
+    
+    <button onclick="addNewTask()">Thêm Nhiệm Vụ</button>
+    <button class="danger" onclick="resetTaskList()">Reset Danh Sách</button>
+    
+    <div id="admin-result" class="result"></div>
+    
+    <h3>Danh Sách Nhiệm Vụ Hiện Tại</h3>
+    <table id="task-table">
+        <thead>
+            <tr>
+                <th>STT</th>
+                <th>Link Nhiệm Vụ</th>
+                <th>Key Xác Nhận</th>
+                <th>Phần Thưởng</th>
+                <th>Hành Động</th>
+            </tr>
+        </thead>
+        <tbody id="task-list">
+            <!-- Danh sách nhiệm vụ sẽ được thêm vào đây bằng JS -->
+        </tbody>
+    </table>
+    
+    <div class="admin-section">
+        <h3>Quản Lý Người Dùng</h3>
+        <button class="secondary" onclick="viewUserStats()">Xem Thống Kê Người Dùng</button>
+        <button class="warning" onclick="exportUserData()">Xuất Dữ Liệu Người Dùng</button>
+    </div>
+</div>
